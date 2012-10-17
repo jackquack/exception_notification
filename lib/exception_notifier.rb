@@ -45,7 +45,7 @@ class ExceptionNotifier
     unless ignored_exception(options[:ignore_exceptions], exception)       ||
            from_crawler(options[:ignore_crawlers], env['HTTP_USER_AGENT']) ||
            conditionally_ignored(options[:ignore_if], env, exception)
-      Notifier.exception_notification(env, exception).deliver
+      Notifier.delay.exception_notification(env, exception)
       @campfire.exception_notification(exception)
       env['exception_notifier.delivered'] = true
     end
