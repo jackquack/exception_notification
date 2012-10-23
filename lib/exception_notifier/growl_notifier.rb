@@ -1,18 +1,17 @@
 class ExceptionNotifier
   class GrowlNotifier
-    require 'ruby-growl'
 
     def initialize(options)
-      @growl = ::Growl.new('localhost',
-                           'uniform_notifier',
-                           [ 'uniform_notifier' ],
-                           nil,
-                           option.password)
-
+      require 'ruby-growl'
+      @growl = ::Growl.new('localhost', 'exception_notification')
+      @growl.add_notification "exception_notification"
     end
 
     def exception_notification(exception)
-      @growl.notify "A new exception occurred: '#{exception.message}' on '#{exception.backtrace.first}'" if active?
+      if active?
+        message = "A new exception occurred: '#{exception.message}' on '#{exception.backtrace.first}'"
+        @growl.notify( 'exception_notification', 'Exception Notification', message )
+      end
     end
 
     private
