@@ -31,7 +31,7 @@ class ExceptionNotifier
     Notifier.default_smtp_settings        = @options[:smtp_settings]
 
     @campfire = CampfireNotifier.new @options[:campfire]
-    @growl = GrowlNotifier.new @options[:growl]
+    @growl = GrowlNotifier.new @options[:growl] if @options[:growl]
 
     @options[:ignore_exceptions] ||= self.class.default_ignore_exceptions
     @options[:ignore_crawlers]   ||= self.class.default_ignore_crawlers
@@ -47,9 +47,9 @@ class ExceptionNotifier
     unless ignored_exception(options[:ignore_exceptions], exception)       ||
            from_crawler(options[:ignore_crawlers], env['HTTP_USER_AGENT']) ||
            conditionally_ignored(options[:ignore_if], env, exception)
-      # Notifier.delay.exception_notification(env, exception)
-      # @campfire.exception_notification(exception)
-      @growl.exception_notification(exception)
+      Notifier.exception_notification(env, exception).deliver
+      @campfire.exception_notification(exception)
+      @growl.exception_notification(exception) if @options[:growl]
       env['exception_notifier.delivered'] = true
     end
 

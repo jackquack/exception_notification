@@ -3,8 +3,7 @@ class ExceptionNotifier
 
     def initialize(options)
       require 'ruby-growl'
-      @growl = ::Growl.new('localhost', 'exception_notification')
-      @growl.add_notification "exception_notification"
+      @growl = ::Growl.new('localhost', 'exception_notification', ["exception_notification"])
     end
 
     def exception_notification(exception)
